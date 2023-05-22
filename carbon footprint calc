@@ -1,0 +1,68 @@
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+
+
+# Enter company data
+name = input("Company name: ")
+
+def calculate_carbon_footprint():
+    # Get user inputs
+    electricity_usage = float(input("Enter your average monthly electricity usage in kilowatt-hours (kWh): "))
+    natural_gas_usage = float(input("Enter your average monthly natural gas usage in cubic meters (m³): "))
+    gasoline_usage = float(input("Enter your average monthly gasoline usage in liters: "))
+    diesel_usage = float(input("Enter your average monthly diesel usage in liters: "))
+
+    # Constants for carbon emissions
+    ELECTRICITY_EMISSIONS_FACTOR = 0.526  # kgCO2/kWh
+    NATURAL_GAS_EMISSIONS_FACTOR = 2.31  # kgCO2/m³
+    GASOLINE_EMISSIONS_FACTOR = 2.31  # kgCO2/liter
+    DIESEL_EMISSIONS_FACTOR = 2.68  # kgCO2/liter
+
+    # Calculate carbon emissions
+    electricity_emissions = electricity_usage * ELECTRICITY_EMISSIONS_FACTOR
+    natural_gas_emissions = natural_gas_usage * NATURAL_GAS_EMISSIONS_FACTOR
+    gasoline_emissions = gasoline_usage * GASOLINE_EMISSIONS_FACTOR
+    diesel_emissions = diesel_usage * DIESEL_EMISSIONS_FACTOR
+
+    total_emissions = electricity_emissions + natural_gas_emissions + gasoline_emissions + diesel_emissions
+
+    # Store the results in variables
+    electricity_result = "{:.2f} kgCO2".format(electricity_emissions)
+    natural_gas_result = "{:.2f} kgCO2".format(natural_gas_emissions)
+    gasoline_result = "{:.2f} kgCO2".format(gasoline_emissions)
+    diesel_result = "{:.2f} kgCO2".format(diesel_emissions)
+    total_result = "{:.2f} kgCO2".format(total_emissions)
+
+    return electricity_result, natural_gas_result, gasoline_result, diesel_result, total_result
+
+# Run the calculation and store the results in variables
+electricity_result, natural_gas_result, gasoline_result, diesel_result, total_result = calculate_carbon_footprint()
+
+# Print the results
+print("\nHi {}, your estimated carbon footprint is:".format(name))
+print("Electricity emissions:", electricity_result)
+print("Natural gas emissions:", natural_gas_result)
+print("Gasoline emissions:", gasoline_result)
+print("Diesel emissions:", diesel_result)
+print("\nTotal emissions:", total_result)
+
+
+# Ideal carbon footprint for comparison
+print("Ideal carbon footprint (pounds per year):\n < 6,000 very low\n 6,000-15,999 low \n 16,000-22,000 average\n >22,000 high")
+
+# Create the PDF report
+pdf = canvas.Canvas("report.pdf", pagesize=letter)
+
+# Add a title
+pdf.setFont("Helvetica-Bold", 16)
+pdf.drawString(50, 750, "Carbon footprint Report for {}".format(name))
+
+# Add the results to the PDF report
+pdf.setFont("Helvetica", 12)
+pdf.drawString(50, 700, "Electricity emissions: {}".format(electricity_result))
+pdf.drawString(50, 680, "Natural gas emissions: {}".format(natural_gas_result))
+pdf.drawString(50, 660, "Gasoline emissions: {}".format(gasoline_result))
+pdf.drawString(50, 640, "Diesel emissions: {}".format(diesel_result))
+pdf.drawString(50, 620, "Total emissions: {}".format(total_result))
+
+pdf.save()
